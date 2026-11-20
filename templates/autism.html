@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+
+    div.container{border-style: double;
+    /*background-image: linear-gradient(to right, purple,cornsilk,lavender,green,skyblue,indigo,orange);*/
+	background-color:skyblue;
+
+    div.friend2field{
+      font-weight: bold;
+      display: grid;
+      grid-template-columns: 1fr 3fr;
+    }
+    body {
+      background-image: linear-gradient(to right, purple,cornsilk,lavender,green,cyan,khaki,pink);;
+    }
+
+    .btn{
+      float:right;
+      font-weight: bold;
+      border: 5px solid #555555;
+
+
+
+    }
+
+
+    </style>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <title>Autism Prediction</title>
+  </head>
+  <body style="background-color:pink;">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="">Autism Prediction System</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav">
+
+     <li class="nav-item">
+        <a class="nav-link" href="/analyze">Autism Prediction </a>
+      </li>
+       <li class="nav-item">
+        <a class="nav-link" href="/find">Find Autism Stage</a>
+      </li>
+       <li class="nav-item">
+        <a class="nav-link" href="/analyze4">View Videos</a>
+      </li>
+       <li class="nav-item active">
+        <form method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="nav-link btn btn-link">
+            Logout<span class="sr-only">(current)</span>
+          </button>
+        </form>
+      </li>
+    </ul>
+  </div>
+
+</nav>
+
+
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Welcome to Autism Prediction!</strong> Predict the Autism Child !!!
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">×</span>
+  </button>
+</div>
+
+
+
+<div class="container">
+
+  <form action='/analyze' method='post'> {% csrf_token %}
+
+    <div class="friend2field">
+      <label style="width:500px;" for="t1">Does your child look at you when you call his/her name?</label>
+      <select name="t1" id="t1" style="width:180px;">
+        <option>0</option>
+        <option>1</option>
+      </select>
+    </div>
+    <br>
+    <div class="friend2field">
+      <label style="width:500px;" for="t2">How easy is it for you to get eye contact with your child?</label>
+      <select name="t2" id="t2" style="width:180px;">
+        <option>0</option>
+        <option>1</option>
+      </select>
+    </div>
+    <br>
+    <div class="friend2field">
+      <label style="width:500px;" for="t3">Does your child point to indicate that He/She wants something?</label>
+      <select name="t3" id="t3" style="width:180px;">
+        <option>0</option>
+        <option>1</option>
+      </select>
+    </div>
+    <br>
+    <div class="friend2field">
+      <label style="width:500px;" for="t4">Does your child point to share an interest with you?</label>
+      <select name="t4" id="t4" style="width:180px;">
+        <option>0</option>
+        <option>1</option>
+      </select>
+    </div>
+    <br>
+    <div class="friend2field">
+      <label style="width:500px;" for="t5">Does your child pretend? e.g. care for dolls, talk on a toy phone?</label>
+      <select name="t5" id="t5" style="width:180px;">
+        <option>0</option>
+        <option>1</option>
+      </select>
+    </div>
+    <br>
+    <div class="friend2field">
+      <label style="width:500px;" for="t6">When you ask your child to come, do they follow your direction?</label>
+      <select name="t6" id="t6" style="width:180px;">
+        <option>0</option>
+        <option>1</option>
+      </select>
+    </div>
+    <br>
+    <div class="friend2field">
+      <label style="width:500px;" for="t7">If you or someone else in the family is visibly upset, does your child show signs of wanting to comfort them?</label>
+      <select name="t7" id="t7" style="width:180px;">
+        <option>0</option>
+        <option>1</option>
+      </select>
+    </div>
+    <br>
+    <div class="friend2field">
+      <label style="width:500px;" for="t8">Does your child ever express wanting to share their toys with others?</label>
+      <select name="t8" id="t8" style="width:180px;">
+        <option>0</option>
+        <option>1</option>
+      </select>
+    </div>
+    <br>
+    <div class="friend2field">
+      <label style="width:500px;" for="t9">Does your child use simple gestures (e.g.wave goodbye)?</label>
+      <select name="t9" id="t9" style="width:180px;">
+        <option>0</option>
+        <option>1</option>
+      </select>
+    </div>
+    <br>
+    <div class="friend2field">
+      <label style="width:500px;" for="t10">Does your child ever show wanting to be independent and do tasks on their own?</label>
+      <select name="t10" id="t10" style="width:180px;">
+        <option>0</option>
+        <option>1</option>
+      </select>
+    </div>
+    <br>
+    <div class="friend2field">
+      <label style="width:500px;" for="t11">Enter age of your child (In Months)</label>
+      <input style="width:180px;" name="t11" id="t11" type="number" placeholder="Enter value in integer" required>
+    </div>
+    <br>
+    <div class="friend2field">
+      <label style="width:500px;" for="t13">Enter Gender of your Child (m/f)</label>
+      <select name="t13" id="t13" style="width:180px;">
+        <option>m</option>
+        <option>f</option>
+      </select>
+    </div>
+    <br>
+    <div class="friend2field">
+      <label style="width:500px;" for="t14">Jaundice Affected for your Child?(yes/no)</label>
+      <select name="t14" id="t14" style="width:180px;">
+        <option>yes</option>
+        <option>no</option>
+      </select>
+    </div>
+    <br>
+    <div class="friend2field">
+      <label style="width:500px;" for="t15">Family member with ASD? (yes/no)</label>
+      <select name="t15" id="t15" style="width:180px;">
+        <option>yes</option>
+        <option>no</option>
+      </select>
+    </div>
+    <br>
+    <div class="friend2field">
+      <label style="width:500px;" ></label>
+      <button type="submit" style="width:180px;" class="btn btn-dark mt-">Predict</button>
+    </div>
+    <br>
+
+
+    {% if autism %}
+      {% if autism == "Yes" %}
+        <h4 style="color:yellow;">Your Child has affected by Autism Disease in Low Level!!</h4>
+      {% elif autism == "High" %}
+    	<h4 style="color:red;">Your Child has been affected by Autism Disease in High Level!!</h4>
+      {% elif autism == "Middle" %}
+    	<h4 style="color:blue;">Your Child has been affected by Autism Disease in Moderate Level!!</h4>
+      {% else %}
+        <h4 style="color:green;">Your Child has not affected by Autism Disease!!</h4>
+      {% endif %}
+    {% endif %}
+
+    </form>
+</div>
+
+
+
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+  </body>
+</html>
