@@ -224,6 +224,7 @@ def analyze(request):
 
     return render(request, "autism.html", {
         "score": score,
+        "result_ready": True,
         "screening_positive": screening_positive,
         "result_text": result_text,
     })
