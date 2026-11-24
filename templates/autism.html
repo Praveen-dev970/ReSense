@@ -125,7 +125,7 @@
     <button type="submit" class="btn btn-primary btn-lg">Calculate screening score</button>
   </form>
 
-  {% if score != None %}
+  {% if result_ready %}
     <section class="result-card" aria-live="polite">
       <h4>Questionnaire screening result</h4>
       <p><strong>Q-CHAT-10 score:</strong> {{ score }} / 10</p>
