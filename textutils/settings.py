@@ -15,13 +15,23 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+RESENSE_ADMIN_USERIDS = frozenset(
+    user_id.strip()
+    for user_id in os.environ.get("RESENSE_ADMIN_USERIDS", "").split(",")
+    if user_id.strip()
+)
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'vj&alc@@srub^mvv6wx7fwk@-j-+&kz268s&_*f-j1p43oi+xg'
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
+if not SECRET_KEY:
+    raise RuntimeError(
+        "DJANGO_SECRET_KEY environment variable is not configured."
+    )
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

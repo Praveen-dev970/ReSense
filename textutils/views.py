@@ -12,11 +12,12 @@ import uuid
 import subprocess
 from pathlib import Path
 
-from django.db import connection, IntegrityError
-from django.contrib.auth.hashers import make_password, check_password, identify_hasher
+from django.conf import settings
+from django.db import connection, IntegrityError, DatabaseError
+from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from functools import wraps
 from django.views.decorators.http import require_POST
 
@@ -116,30 +117,14 @@ def login(request):
 
             if user is not None:
                 stored_password = user[0]
-
-                try:
-                    identify_hasher(stored_password)
-                    is_valid = check_password(pwd, stored_password)
-
-                except ValueError:
-                    # Existing account with a legacy plaintext password.
-                    is_valid = (
-                        stored_password == pwd
-                        if stored_password is not None
-                        else False
-                    )
-
-                    if is_valid:
-                        new_password = make_password(pwd)
-
-                        cursor.execute(
-                            """
-                            UPDATE users
-                            SET password = %s
-                            WHERE userid = %s
-                            """,
-                            [new_password, uid]
-                        )
+                is_valid = False
+                if isinstance(stored_password, str):
+                    try:
+                        is_valid = check_password(pwd, stored_password)
+                    except (ValueError, TypeError, AssertionError, AttributeError,
+                            OverflowError, ImproperlyConfigured):
+                        # Malformed or unsupported stored hashes fail closed.
+                        is_valid = False
 
                 if is_valid:
                     request.session.flush()
@@ -160,12 +145,34 @@ def login(request):
 
 def login1(request):
     if request.method == "POST":
-        uid = request.POST.get("uid", "")
+        uid = request.POST.get("uid", "").strip()
         pwd = request.POST.get("pwd", "")
 
-        if uid == "admin" and pwd == "admin":
+        is_admin = False
+        if uid and pwd and uid in settings.RESENSE_ADMIN_USERIDS:
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "SELECT userid, password FROM users WHERE userid = %s",
+                        [uid]
+                    )
+                    accounts = cursor.fetchall()
+
+                if len(accounts) == 1:
+                    account_userid, stored_password = accounts[0]
+                    if account_userid == uid and isinstance(stored_password, str):
+                        try:
+                            is_admin = check_password(pwd, stored_password)
+                        except (ValueError, TypeError, AttributeError):
+                            # Unsupported or malformed hashes fail closed.
+                            is_admin = False
+            except DatabaseError:
+                is_admin = False
+
+        if is_admin:
             request.session.flush()
 
+            request.session["resense_user_id"] = account_userid
             request.session["resense_role"] = "admin"
             request.session.set_expiry(8 * 60 * 60)
 
