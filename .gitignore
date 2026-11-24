@@ -157,3 +157,5 @@ Python-Autism Detection/
 .env
 config.ini
 secrets.json
+
+.claude/settings.json

@@ -11,7 +11,7 @@ ROOT = Path(
 VIDEOS = [
     ROOT / "testing_set" / "TD" / "Subj_122_part_58.mp4",
     ROOT / "training_set" / "ASD" / "Subj_2_part_20.mp4",
-    ROOT / "training_set" / "TD" / "Subj_2_part_20.mp4",
+    ROOT / "training_set" / "TD" / "Subj_14_part_111.mp4",
 ]
 
 OUTPUT = Path(
@@ -25,10 +25,15 @@ results = []
 for video_path in VIDEOS:
     print(f"\nInspecting: {video_path.name} | {video_path.parent.name}")
 
+    if not video_path.exists():
+        print(f"ERROR: File not found: {video_path}")
+        continue
+
     cap = cv2.VideoCapture(str(video_path))
 
     if not cap.isOpened():
         print("ERROR: Cannot open video")
+        cap.release()
         continue
 
     frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -44,10 +49,13 @@ for video_path in VIDEOS:
 
     index = 0
 
-    while True:
+    # Read frames up to the reported metadata frame count.
+    # A failed read before that count is recorded as an early read failure.
+    while index < frame_count:
         success, frame = cap.read()
 
         if not success:
+            read_errors.append(index)
             break
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -56,8 +64,11 @@ for video_path in VIDEOS:
             exact_black.append(index)
         else:
             foreground = cv2.countNonZero(
-                cv2.threshold(gray, 10, 255, cv2.THRESH_BINARY)[1]
+                cv2.threshold(
+                    gray, 10, 255, cv2.THRESH_BINARY
+                )[1]
             )
+
             percentage = foreground / (width * height) * 100
 
             if foreground == 0:
@@ -94,10 +105,15 @@ for video_path in VIDEOS:
     print(f"Zero foreground: {len(zero_foreground)}")
     print(f"Low foreground: {len(low_foreground)}")
     print(f"Visible: {len(visible)}")
+    print(f"Early read failures: {len(read_errors)}")
 
 with OUTPUT.open("w", newline="", encoding="utf-8") as f:
-    writer = csv.DictWriter(f, fieldnames=results[0].keys())
-    writer.writeheader()
-    writer.writerows(results)
+    if results:
+        writer = csv.DictWriter(
+            f,
+            fieldnames=results[0].keys()
+        )
+        writer.writeheader()
+        writer.writerows(results)
 
 print(f"\nReport saved to: {OUTPUT}")
