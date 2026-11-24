@@ -186,54 +186,47 @@ def login1(request):
 
 @user_required
 def analyze(request):
-    if request.method=="POST":
-        q1 = int(request.POST["t1"])
-        q2 = int(request.POST["t2"])
-        q3 = int(request.POST["t3"])
-        q4 = int(request.POST["t4"])
-        q5 = int(request.POST["t5"])
-        q6 = int(request.POST["t6"])
-        q7 = int(request.POST["t7"])
-        q8 = int(request.POST["t8"])
-        q9 = int(request.POST["t9"])
-        q10 = int(request.POST["t10"])
-        age = int(request.POST["t11"])
-        gender = request.POST["t13"]
-        jaundice = request.POST["t14"]
-        asd_family = request.POST["t15"]
+    """
+    Calculate the documented Q-CHAT-10 screening score.
 
-        emotion = pd.read_csv("dataset2.csv")
-        #attr=["fft_749_b","label"]
+    A1-A9: Sometimes, Rarely, Never = 1.
+    A10: Always, Usually, Sometimes = 1.
+    This is a questionnaire scoring rule, not a clinical diagnosis.
+    """
+    if request.method != "POST":
+        return render(request, "autism.html", {})
 
-        value="None"
-        with open('dataset2.csv') as file_obj:
-            reader_obj = csv.reader(file_obj)
-            i=1
-            for row in reader_obj:
-                if i == 1:
-                    i = i + 1
-                    continue
-                data1 = int(row[1])
-                data2 = int(row[2])
-                data3 = int(row[3])
-                data4 = int(row[4])
-                data5 = int(row[5])
-                data6 = int(row[6])
-                data7 = int(row[7])
-                data8 = int(row[8])
-                data9 = int(row[9])
-                data10 = int(row[10])
-                data_age = int(row[11])
-                data_gender = row[13]
-                data_jaundice = row[15]
-                data_asd_family = row[16]
+    response_options = {"Always", "Usually", "Sometimes", "Rarely", "Never"}
+    answers = []
 
-                #print(data)
-                if data1 == q1 and data2 == q2 and data3 == q3 and data4 == q4 and data5 == q5 and data6 == q6 and data7 == q7 and data8 == q8 and data9 == q9 and data10 == q10 and data_age == age and data_gender == gender and data_jaundice == jaundice and data_asd_family == asd_family:
-                    value = row[18]
-                    break
-        return render(request, 'autism.html', {"autism":value})
-    return render(request, 'autism.html', {})
+    for question_number in range(1, 11):
+        answer = request.POST.get("t{}".format(question_number), "")
+        if answer not in response_options:
+            return render(request, "autism.html", {
+                "error": "Please answer all 10 questionnaire items using the available response options."
+            })
+        answers.append(answer)
+
+    score = sum(
+        1 if answer in {"Sometimes", "Rarely", "Never"} else 0
+        for answer in answers[:9]
+    )
+    score += 1 if answers[9] in {"Always", "Usually", "Sometimes"} else 0
+
+    screening_positive = score > 3
+    result_text = (
+        "The questionnaire score is above the screening threshold. "
+        "Potential ASD traits are indicated by this screening rule."
+        if screening_positive else
+        "The questionnaire score is at or below the screening threshold. "
+        "Potential ASD traits are not indicated by this screening rule."
+    )
+
+    return render(request, "autism.html", {
+        "score": score,
+        "screening_positive": screening_positive,
+        "result_text": result_text,
+    })
 
 @user_required
 def find(request):
