@@ -20,6 +20,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from functools import wraps
 from django.views.decorators.http import require_POST
+from .questionnaire import calculate_qchat10_score, exceeds_screening_threshold
 
 
 def user_required(view_func):
@@ -188,32 +189,24 @@ def login1(request):
 def analyze(request):
     """
     Calculate the documented Q-CHAT-10 screening score.
-
-    A1-A9: Sometimes, Rarely, Never = 1.
-    A10: Always, Usually, Sometimes = 1.
-    This is a questionnaire scoring rule, not a clinical diagnosis.
+    This questionnaire rule provides preliminary screening support only.
     """
     if request.method != "POST":
         return render(request, "autism.html", {})
 
-    response_options = {"Always", "Usually", "Sometimes", "Rarely", "Never"}
-    answers = []
+    answers = [
+        request.POST.get("t{}".format(question_number), "")
+        for question_number in range(1, 11)
+    ]
 
-    for question_number in range(1, 11):
-        answer = request.POST.get("t{}".format(question_number), "")
-        if answer not in response_options:
-            return render(request, "autism.html", {
-                "error": "Please answer all 10 questionnaire items using the available response options."
-            })
-        answers.append(answer)
+    try:
+        score = calculate_qchat10_score(answers)
+    except ValueError:
+        return render(request, "autism.html", {
+            "error": "Please answer all 10 questions using the available response options."
+        })
 
-    score = sum(
-        1 if answer in {"Sometimes", "Rarely", "Never"} else 0
-        for answer in answers[:9]
-    )
-    score += 1 if answers[9] in {"Always", "Usually", "Sometimes"} else 0
-
-    screening_positive = score > 3
+    screening_positive = exceeds_screening_threshold(score)
     result_text = (
         "The questionnaire score is above the screening threshold. "
         "Potential ASD traits are indicated by this screening rule."
