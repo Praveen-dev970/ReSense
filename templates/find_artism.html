@@ -9,6 +9,7 @@
     div.container{border-style: double;
     /*background-image: linear-gradient(to right, purple,orange,yellow,green,blue,indigo,violet);*/
 	background-color:skyblue;
+  }
 
     div.friend2field{
       font-weight: bold;
@@ -77,9 +78,38 @@
 
 <div class="container">
 
-  {% if msg %}
-    <div class="alert alert-info" role="status">{{ msg }}</div>
-  {% endif %}
+{% if msg %}
+  <div class="alert alert-info" role="status">
+    {{ msg }}
+  </div>
+{% endif %}
+
+{% if video_prediction %}
+  <div class="alert alert-success" role="status">
+    <h4>Experimental Video Model Result</h4>
+
+    <p>
+      <strong>Model classification:</strong>
+      {{ video_prediction }}
+    </p>
+
+    <p>
+      <strong>Raw model score:</strong>
+      {{ video_model_score }}
+    </p>
+
+    <p>
+      <strong>Frames processed:</strong>
+      {{ video_frames_processed }}
+    </p>
+
+    <hr>
+
+    <p>
+      {{ video_disclaimer }}
+    </p>
+  </div>
+{% endif %}
 
   <form action='/output' method='post' enctype="multipart/form-data">
     {% csrf_token %}

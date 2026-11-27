@@ -40,6 +40,70 @@
 
   <form action="{% url 'analyze' %}" method="post">
     {% csrf_token %}
+    <input
+        type="hidden"
+        name="submission_token"
+        value="{{ submission_token }}"
+    >
+
+    <!-- Demographic information -->
+    <div class="question-card">
+      <label for="age">Child's age (years)</label>
+      <input
+        type="number"
+        class="form-control"
+        name="age"
+        id="age"
+        min="0"
+        step="1"
+        required
+      >
+      <label for="age_months">Additional months</label>
+      <select class="form-control" name="age_months" id="age_months" required>
+        <option value="">Choose months</option>
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+      </select>
+    </div>
+
+    <div class="question-card">
+      <label for="gender">Child's gender</label>
+      <select class="form-control" name="gender" id="gender" required>
+        <option value="">Choose gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+
+    <div class="question-card">
+      <label for="jaundice">Was the child diagnosed with jaundice?</label>
+      <select class="form-control" name="jaundice" id="jaundice" required>
+        <option value="">Choose an answer</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+    </div>
+
+    <div class="question-card">
+      <label for="asd_family">Is there a family history of ASD?</label>
+      <select class="form-control" name="asd_family" id="asd_family" required>
+        <option value="">Choose an answer</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+    </div>
+
 
     <div class="question-card">
       <label for="t1">1. Does your child look at you when you call his/her name?</label>

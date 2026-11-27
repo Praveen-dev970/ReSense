@@ -159,3 +159,10 @@ config.ini
 secrets.json
 
 .claude/settings.json
+
+# Local research datasets and generated CSV files
+/data/Autism-Child-Data.csv
+/dataset2.csv
+/featuresdb6.csv
+/pcdb6.csv
+/outputs_main.csv

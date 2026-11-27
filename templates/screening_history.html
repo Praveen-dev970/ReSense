@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Screening History - ReSense</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2>My Questionnaire Screening History</h2>
+
+    <p>Previous questionnaire screening submissions.</p>
+
+    {% if records %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Submission ID</th>
+                    <th>Date</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Score Result</th>
+                    <th>View</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    <td>{{ record.id }}</td>
+                    <td>{{ record.created_at }}</td>
+                    <td>{{ record.age }} years {{ record.age_months }} months</td>
+                    <td>{{ record.gender }}</td>
+                    <td>{{ record.result }}</td>
+                    <td>
+                        <a href="{% url 'screening_result' record.id %}"
+                           class="btn btn-primary btn-sm">
+                            View Result
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <p>No previous screening submissions found.</p>
+    {% endif %}
+
+    <a href="{% url 'analyze' %}" class="btn btn-secondary">
+        Back to Questionnaire
+    </a>
+</div>
+
+</body>
+</html>

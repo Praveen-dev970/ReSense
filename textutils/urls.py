@@ -23,9 +23,13 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
-    path('analyze', views.analyze, name='analyze'),
+    path('analyze/', views.analyze, name='analyze'),
+    path('screening-result/<int:result_id>/', views.screening_result,
+        name='screening_result'),
+    path('screening-history/', views.screening_history,
+        name='screening_history'),
     path('find', views.find, name='find'),
-    path('analyze1/', views.analyze1),
+    path('analyze1/', views.analyze1, name='analyze1'),
     path('analyze2', views.analyze2),
     path('analyze3/', views.analyze3),
     path('analyze4/', views.analyze4),
@@ -34,4 +38,9 @@ urlpatterns = [
     path('registration/', views.registration, name='registration'),
     path('login/', views.login, name='login'),
     path('logout/', views.logout, name='logout'),
+    path(
+            'admin-screenings/',
+            views.admin_screenings,
+            name='admin_screenings'
+        ),
 ]

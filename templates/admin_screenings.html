@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Screening Records - ReSense</title>
+
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+</head>
+
+<body>
+<div class="container mt-5">
+
+    <h2>Questionnaire Screening Records</h2>
+    <p>Screening submissions available to authorized administrators.</p>
+
+    {% if records %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Jaundice</th>
+                    <th>Family History</th>
+                    <th>Result</th>
+                    <th>Submission Date</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    <td>{{ record.id }}</td>
+                    <td>
+                        {% if record.user %}
+                            {{ record.user.username }}
+                        {% else %}
+                            Unknown
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ record.age }} years
+                        {{ record.age_months }} months
+                    </td>
+                    <td>{{ record.gender }}</td>
+                    <td>{{ record.jaundice }}</td>
+                    <td>{{ record.asd_family }}</td>
+                    <td>{{ record.result }}</td>
+                    <td>{{ record.created_at }}</td>
+                    <td>
+                        {% if record.user %}
+                        <a href="{% url 'screening_result' record.id %}"
+                           class="btn btn-primary btn-sm">
+                            View
+                        </a>
+                        {% else %}
+                            Not available
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <p>No screening records found.</p>
+    {% endif %}
+
+    <a href="{% url 'analyze1' %}" class="btn btn-secondary">
+        Back to Dashboard
+    </a>
+
+</div>
+</body>
+</html>

@@ -49,6 +49,11 @@
       <li class="nav-item">
         <a class="nav-link" href="/analyze3">View Videos</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'admin_screenings' %}">
+            View Screening Records
+        </a>
+    </li>
       <li class="nav-item active">
         <form method="post" action="{% url 'logout' %}">
           {% csrf_token %}
