@@ -28,10 +28,10 @@ from django.contrib.auth import (
     logout as auth_logout,
 )
 from django.db import transaction
-from .models import AutismScreeningResult
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import AutismScreeningResult
+from .models import AutismScreeningResult, VideoAssessmentResult
 import json
+
 
 def user_required(view_func):
     @wraps(view_func)
@@ -472,6 +472,16 @@ def screening_result(request, result_id):
         "result_ready": True,
         "screening_positive": screening_positive,
         "result_text": result_text,
+
+        # Previously saved questionnaire answers
+        "answers": answers,
+
+        # Previously saved demographic information
+        "saved_age": screening.age,
+        "saved_age_months": screening.age_months,
+        "saved_gender": screening.gender,
+        "saved_jaundice": screening.jaundice,
+        "saved_asd_family": screening.asd_family,
     })
 
 @user_required
@@ -487,6 +497,50 @@ def screening_history(request):
     return render(request, "screening_history.html", {
         "records": records,
     })
+
+
+@user_required
+def user_dashboard(request):
+    """
+    Display the logged-in user's latest assessments
+    and separate assessment histories.
+    """
+
+    # Questionnaire records belonging to this user
+    questionnaire_records = AutismScreeningResult.objects.filter(
+        user=request.user
+    ).order_by('-created_at')
+
+    # Video assessment records belonging to this user
+    video_records = VideoAssessmentResult.objects.filter(
+        user=request.user
+    ).order_by('-created_at')
+
+    # Latest results
+    latest_questionnaire = questionnaire_records.first()
+    latest_video = video_records.first()
+
+    context = {
+        'latest_questionnaire': latest_questionnaire,
+        'latest_video': latest_video,
+
+        # Complete histories, newest first
+        'questionnaire_history': questionnaire_records,
+        'video_history': video_records,
+
+        # Completion indicators
+        'questionnaire_completed': latest_questionnaire is not None,
+        'video_completed': latest_video is not None,
+
+        # Overall summary is completion status only
+        'both_completed': (
+            latest_questionnaire is not None
+            and latest_video is not None
+        ),
+    }
+
+    return render(request, 'user_dashboard.html', context)
+
 
 
 @user_required
@@ -642,6 +696,7 @@ def analyze3(request):
 
 
 
+
 @user_required
 def output(request):
     uploaded_file = request.FILES.get('fi')
@@ -701,12 +756,24 @@ def output(request):
                 )
             })
 
+        # Read the JSON response from process_video.py
         try:
             data = json.loads(result.stdout)
+
+            if data.get('status') != 'success':
+                raise ValueError(
+                    'Video processing did not return success.'
+                )
+
             prediction = data['prediction']
+
             predicted_class = prediction['predicted_class']
             model_score = float(prediction['model_score'])
             frames_processed = int(prediction['frames_processed'])
+            selected_frame = prediction['selected_frame']
+
+            total_frames = int(data['total_frames'])
+            frames_saved = int(data['frames_saved'])
 
         except (ValueError, KeyError, TypeError):
             return render(request, 'find_artism.html', {
@@ -716,6 +783,7 @@ def output(request):
                 )
             })
 
+        # Validate the model output
         if predicted_class not in {'ASD', 'TD'}:
             return render(request, 'find_artism.html', {
                 'msg': 'The video model returned an unknown class.'
@@ -726,6 +794,28 @@ def output(request):
                 'msg': 'The video model returned an invalid score.'
             })
 
+        if min(total_frames, frames_saved, frames_processed) < 0:
+            return render(request, 'find_artism.html', {
+                'msg': 'The video model returned invalid frame information.'
+            })
+
+        if not isinstance(selected_frame, str) or not selected_frame:
+            return render(request, 'find_artism.html', {
+                'msg': 'The video model returned an invalid selected frame.'
+            })
+
+        # Save the successful video assessment in the database
+        VideoAssessmentResult.objects.create(
+            user=request.user,
+            predicted_class=predicted_class,
+            model_score=model_score,
+            total_frames=total_frames,
+            frames_saved=frames_saved,
+            frames_processed=frames_processed,
+            selected_frame=selected_frame,
+        )
+
+        # Display the result
         return render(request, 'find_artism.html', {
             'msg': (
                 'Video frame processing and experimental model '

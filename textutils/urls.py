@@ -28,6 +28,11 @@ urlpatterns = [
         name='screening_result'),
     path('screening-history/', views.screening_history,
         name='screening_history'),
+    path(
+            'dashboard/',
+            views.user_dashboard,
+            name='user_dashboard'
+        ),
     path('find', views.find, name='find'),
     path('analyze1/', views.analyze1, name='analyze1'),
     path('analyze2', views.analyze2),

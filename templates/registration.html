@@ -1,112 +1,172 @@
-<!doctype html>
+{% load static %}
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <style>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ReSense – User Registration</title>
+  <link rel="icon" type="image/png" href="{% static 'assets/favicon.png' %}">
+  <link rel="stylesheet" href="{% static 'css/resense.css' %}">
+</head>
+<body>
 
-    div.container{border-style: double;
-    /*background-image: linear-gradient(to right, purple,orange,yellow,green,blue,indigo,violet);*/
-	background-color:skyblue;
+<!-- Navigation Bar -->
+<header class="resense-navbar">
+  <div class="resense-nav-container">
+    <a href="/" class="resense-brand">
+      <div class="resense-brand-logo">
+        <svg width="34" height="34" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="20" r="18" fill="#5E35B1"/>
+          <path d="M14 16C14 13.7909 15.7909 12 18 12C19.1046 12 20 12.8954 20 14C20 15.1046 20.8954 16 22 16C24.2091 16 26 17.7909 26 20C26 21.1046 25.1046 22 24 22C22.8954 22 22 22.8954 22 24C22 26.2091 20.2091 28 18 28C15.7909 28 14 26.2091 14 24C14 22.8954 14.8954 22 16 22C17.1046 22 18 21.1046 18 20C18 18.8954 17.1046 18 16 18C14.8954 18 14 17.1046 14 16Z" fill="#A78BFA"/>
+          <path d="M22 14C23.1046 14 24 13.1046 24 12C26.2091 12 28 13.7909 28 16C28 17.1046 27.1046 18 26 18C26 19.1046 26.8954 20 28 20C28 22.2091 26.2091 24 24 24" stroke="#67E8F9" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="16" cy="19" r="1.5" fill="#FDE047"/>
+          <circle cx="24" cy="21" r="1.5" fill="#F43F5E"/>
+        </svg>
+      </div>
+      <span>ReSense</span>
+    </a>
 
-    div.friend2field{
-      font-weight: bold;
-      display: grid;
-      grid-template-columns: 1fr 3fr;
-    }
-    body {
-      background-image: linear-gradient(to right, purple,cornsilk,lavender,green,cyan,khaki,pink);;
-    }
+    <button class="resense-nav-toggle" id="navToggle" aria-label="Toggle navigation">
+      &#9776;
+    </button>
 
-    .btn{
-      float:right;
-      font-weight: bold;
-      border: 5px solid #555555;
-
-
-
-    }
-
-
-    </style>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-
-    <title>Autism Prediction</title>
-  </head>
-  <body style="background-color:pink;">
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="">Autism Prediction System</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNavDropdown">
-    <ul class="navbar-nav">
-      <li class="nav-item active">
-        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-      </li>
-
-    </ul>
+    <nav>
+      <ul class="resense-nav-menu" id="navMenu">
+        <li class="resense-nav-item">
+          <a class="resense-nav-link" href="/">Home</a>
+        </li>
+        <li class="resense-nav-item">
+          <a class="resense-nav-link" href="/login1">Admin</a>
+        </li>
+      </ul>
+    </nav>
   </div>
+</header>
 
-</nav>
+<!-- Main Registration Container -->
+<main class="resense-page-container">
+  <div class="resense-card" style="max-width: 980px; margin: 30px auto; padding: 40px 48px;">
 
+    <div class="resense-split-grid">
 
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-  <strong style="font-size:35px;">User Registration Form</strong>
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">×</span>
-  </button>
-</div>
+      <!-- Left Hero Column -->
+      <div class="resense-hero-visual">
+        <div class="resense-hero-illustration">
+          <svg viewBox="0 0 320 240" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto; max-height: 200px;">
+            <ellipse cx="160" cy="190" rx="130" ry="22" fill="#E0E7FF" opacity="0.6"/>
+            <path d="M70 150C55 130 70 100 90 115C110 130 95 160 70 150Z" fill="#BBF7D0" opacity="0.7"/>
+            <path d="M250 150C265 130 250 100 230 115C210 130 225 160 250 150Z" fill="#BBF7D0" opacity="0.7"/>
 
-<div class="container">
+            <!-- Account badge & sparkles -->
+            <g transform="translate(110, 40)">
+              <rect x="0" y="0" width="100" height="120" rx="16" fill="#EDE9FE"/>
+              <circle cx="50" cy="45" r="22" fill="#5E35B1"/>
+              <circle cx="50" cy="40" r="10" fill="#FCD34D"/>
+              <path d="M35 60C35 52 42 48 50 48C58 48 65 52 65 60" fill="#FCD34D"/>
+              <rect x="25" y="80" width="50" height="6" rx="3" fill="#8B5CF6"/>
+              <rect x="35" y="94" width="30" height="5" rx="2.5" fill="#C4B5FD"/>
+            </g>
+          </svg>
+        </div>
 
-  <form action='/registration/' method='post'>
-    {% csrf_token %}
-      <div class="friend2field">
-      <label for="name">Enter Name</label>
-      <input  name="name" id="name" type="text" placeholder="Enter Name" required>
+        <h1 class="resense-hero-title">Join ReSense</h1>
+        <p class="resense-hero-subtitle">
+          Create an account to access standardized pediatric behavioral screening and confidential history tracking.
+        </p>
+
+        <div class="resense-disclaimer-box" style="margin-top: 10px; width: 100%; text-align: left;">
+          <div class="resense-disclaimer-icon">i</div>
+          <div class="resense-disclaimer-text">
+            Provides preliminary screening support and should not replace professional clinical assessment or diagnosis.
+          </div>
+        </div>
       </div>
-    <br>
-      <div class="friend2field">
-      <label for="mailid">Enter Mail Id</label>
-      <input  name="mailid" id="mailid" type="text" placeholder="Enter Mail Id" required>
+
+      <!-- Right Form Column (Registration) -->
+      <div style="background: #fafbff; border: 1px solid #e8ecf8; border-radius: 18px; padding: 32px 28px;">
+
+        <div style="text-align: center; margin-bottom: 20px;">
+          <h2 style="margin: 0; font-size: 1.4rem; font-weight: 700; color: #161c3d;">User Registration</h2>
+          <p style="margin: 4px 0 0 0; font-size: 0.9rem; color: #64748b;">Please enter your details to register</p>
+        </div>
+
+        {% if msg %}
+        <div class="resense-alert {% if 'success' in msg|lower %}resense-alert-success{% else %}resense-alert-danger{% endif %}" role="alert">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span>{{ msg }}</span>
+        </div>
+        {% endif %}
+
+        <form action="/registration/" method="post">
+          {% csrf_token %}
+
+          <div class="resense-form-group">
+            <label class="resense-label" for="name">Full Name</label>
+            <input class="resense-input" name="name" id="name" type="text" placeholder="Enter your full name" required autocomplete="name">
+          </div>
+
+          <div class="resense-form-group">
+            <label class="resense-label" for="mailid">Email Address</label>
+            <input class="resense-input" name="mailid" id="mailid" type="email" placeholder="Enter email address" required autocomplete="email">
+          </div>
+
+          <div class="resense-form-group">
+            <label class="resense-label" for="mobileno">Mobile Number</label>
+            <input class="resense-input" name="mobileno" id="mobileno" type="tel" placeholder="Enter mobile number" required autocomplete="tel">
+          </div>
+
+          <div class="resense-form-group">
+            <label class="resense-label" for="uid">Username</label>
+            <input class="resense-input" name="uid" id="uid" type="text" placeholder="Choose a username" required autocomplete="username">
+          </div>
+
+          <div class="resense-form-group" style="margin-bottom: 24px;">
+            <label class="resense-label" for="pwd">Password</label>
+            <div class="resense-input-wrapper">
+              <input class="resense-input" name="pwd" id="pwd" type="password" placeholder="Create a secure password" required autocomplete="new-password">
+              <button type="button" class="resense-password-toggle" id="toggleRegPassword" aria-label="Toggle password visibility">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="resense-btn resense-btn-primary resense-btn-block" style="padding: 12px;">
+            Register Account
+          </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 18px; font-size: 0.9rem; color: #526079;">
+          Already have an account? <a href="/" style="font-weight: 600; color: #5e35b1;">Login here</a>
+        </div>
+
       </div>
-    <br>
-      <div class="friend2field">
-      <label for="mobileno">Enter Mobile no</label>
-      <input  name="mobileno" id="mobileno" type="text" placeholder="Enter Mobile no" required>
-      </div>
-    <br>
-    <div class="friend2field">
-      <label for="uid">Enter Username:</label>
-      <input  name="uid" id="uid" type="text" placeholder="Enter Username" required>
-    </div>
-    <br>
-    <div class="friend2field">
-      <label for="pwd">Enter Password:</label>
-      <input  name="pwd" id="pwd" type="password" placeholder="Enter Password" required>
+
     </div>
 
-    <br>
+  </div>
+</main>
 
-<div class="">
-      <label for=""></label>
-      <button type="submit" class="btn btn-info mt-">Register</button>
-    </div>
-    <br>
+<script>
+  document.getElementById('navToggle').addEventListener('click', function() {
+    document.getElementById('navMenu').classList.toggle('show');
+  });
 
+  const toggleBtn = document.getElementById('toggleRegPassword');
+  const pwdInput = document.getElementById('pwd');
+  if (toggleBtn && pwdInput) {
+    toggleBtn.addEventListener('click', function() {
+      const type = pwdInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      pwdInput.setAttribute('type', type);
+    });
+  }
+</script>
 
-    </form>
-  <h4 style="color:blue">{{msg}}</h4>
-</div>
-
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
-  </body>
+</body>
 </html>

@@ -1,61 +1,136 @@
-
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Screening History - ReSense</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ReSense – My Screening History</title>
+  <link rel="icon" type="image/png" href="{% static 'assets/favicon.png' %}">
+  <link rel="stylesheet" href="{% static 'css/resense.css' %}">
 </head>
 <body>
 
-<div class="container mt-5">
-    <h2>My Questionnaire Screening History</h2>
+<!-- Navigation Bar -->
+<header class="resense-navbar">
+  <div class="resense-nav-container">
+    <a href="/dashboard/" class="resense-brand">
+      <div class="resense-brand-logo">
+        <svg width="34" height="34" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="20" r="18" fill="#5E35B1"/>
+          <path d="M14 16C14 13.7909 15.7909 12 18 12C19.1046 12 20 12.8954 20 14C20 15.1046 20.8954 16 22 16C24.2091 16 26 17.7909 26 20C26 21.1046 25.1046 22 24 22C22.8954 22 22 22.8954 22 24C22 26.2091 20.2091 28 18 28C15.7909 28 14 26.2091 14 24C14 22.8954 14.8954 22 16 22C17.1046 22 18 21.1046 18 20C18 18.8954 17.1046 18 16 18C14.8954 18 14 17.1046 14 16Z" fill="#A78BFA"/>
+          <path d="M22 14C23.1046 14 24 13.1046 24 12C26.2091 12 28 13.7909 28 16C28 17.1046 27.1046 18 26 18C26 19.1046 26.8954 20 28 20C28 22.2091 26.2091 24 24 24" stroke="#67E8F9" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="16" cy="19" r="1.5" fill="#FDE047"/>
+          <circle cx="24" cy="21" r="1.5" fill="#F43F5E"/>
+        </svg>
+      </div>
+      <span>ReSense</span>
+    </a>
 
-    <p>Previous questionnaire screening submissions.</p>
+    <button class="resense-nav-toggle" id="navToggle" aria-label="Toggle navigation">
+      &#9776;
+    </button>
+
+    <nav>
+      <ul class="resense-nav-menu" id="navMenu">
+        <li class="resense-nav-item">
+          <a class="resense-nav-link" href="/dashboard/">Dashboard</a>
+        </li>
+        <li class="resense-nav-item">
+          <a class="resense-nav-link" href="/analyze">Q-CHAT-10 Screening</a>
+        </li>
+        <li class="resense-nav-item">
+          <a class="resense-nav-link" href="/find">Video Upload</a>
+        </li>
+        <li class="resense-nav-item">
+          <a class="resense-nav-link" href="/analyze4">View Videos</a>
+        </li>
+        <li class="resense-nav-item">
+          <form method="post" action="{% url 'logout' %}" class="resense-nav-form">
+            {% csrf_token %}
+            <button type="submit" class="resense-nav-link">Logout</button>
+          </form>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- Main Screening History Content -->
+<main class="resense-page-container">
+
+  <div class="resense-card">
+
+    <div class="resense-card-header">
+      <div class="resense-card-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+      </div>
+      <div class="resense-card-title-group">
+        <h2>My Questionnaire Screening History</h2>
+        <p>Review all your previously submitted Q-CHAT-10 questionnaire assessments.</p>
+      </div>
+    </div>
 
     {% if records %}
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Submission ID</th>
-                    <th>Date</th>
-                    <th>Age</th>
-                    <th>Gender</th>
-                    <th>Score Result</th>
-                    <th>View</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for record in records %}
-                <tr>
-                    <td>{{ record.id }}</td>
-                    <td>{{ record.created_at }}</td>
-                    <td>{{ record.age }} years {{ record.age_months }} months</td>
-                    <td>{{ record.gender }}</td>
-                    <td>{{ record.result }}</td>
-                    <td>
-                        <a href="{% url 'screening_result' record.id %}"
-                           class="btn btn-primary btn-sm">
-                            View Result
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="resense-table-container">
+      <table class="resense-table">
+        <thead>
+          <tr>
+            <th style="width: 70px; text-align: center;">ID</th>
+            <th>Date</th>
+            <th>Child Age</th>
+            <th>Gender</th>
+            <th>Screening Result</th>
+            <th style="text-align: center;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for record in records %}
+          <tr>
+            <td style="text-align: center; font-weight: 600; color: #64748b;">{{ record.id }}</td>
+            <td style="color: #1e293b; font-weight: 500;">{{ record.created_at|date:"d M Y, h:i A" }}</td>
+            <td>{{ record.age }} years {{ record.age_months }} months</td>
+            <td>{{ record.gender }}</td>
+            <td>
+              <span class="resense-badge {% if 'Above' in record.result %}resense-badge-danger{% else %}resense-badge-success{% endif %}">
+                {{ record.result }}
+              </span>
+            </td>
+            <td style="text-align: center;">
+              <a href="{% url 'screening_result' record.id %}" class="resense-btn resense-btn-action-view">
+                View Details
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
     {% else %}
-        <p>No previous screening submissions found.</p>
+    <div style="text-align: center; padding: 48px 20px;">
+      <h3 style="margin: 0 0 8px 0; color: #334155; font-size: 1.15rem;">No Screening Submissions Found</h3>
+      <p style="margin: 0 0 20px 0; color: #64748b; font-size: 0.925rem;">You haven't completed any Q-CHAT-10 questionnaires yet.</p>
+      <a href="{% url 'analyze' %}" class="resense-btn resense-btn-primary">Start Questionnaire</a>
+    </div>
     {% endif %}
 
-    <a href="{% url 'analyze' %}" class="btn btn-secondary">
-        Back to Questionnaire
-    </a>
-</div>
+    <div style="margin-top: 24px;">
+      <a href="{% url 'analyze' %}" class="resense-btn resense-btn-secondary">
+        &larr; Back to Questionnaire
+      </a>
+    </div>
+
+  </div>
+
+</main>
+
+<script>
+  document.getElementById('navToggle').addEventListener('click', function() {
+    document.getElementById('navMenu').classList.toggle('show');
+  });
+</script>
 
 </body>
 </html>

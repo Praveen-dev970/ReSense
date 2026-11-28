@@ -52,3 +52,44 @@ class AutismScreeningResult(models.Model):
 
     def __str__(self):
         return f"Screening {self.id} - {self.result}"
+
+
+class VideoAssessmentResult(models.Model):
+    """Store experimental video CNN assessment metadata for each user."""
+
+    CLASS_CHOICES = [
+        ("ASD", "ASD"),
+        ("TD", "TD"),
+    ]
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="video_assessment_results"
+    )
+
+    predicted_class = models.CharField(
+        max_length=3,
+        choices=CLASS_CHOICES
+    )
+
+    # Raw model output; this is not a clinically validated probability.
+    model_score = models.FloatField()
+
+    total_frames = models.PositiveIntegerField()
+    frames_saved = models.PositiveIntegerField()
+    frames_processed = models.PositiveIntegerField()
+
+    selected_frame = models.CharField(max_length=100)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "video_assessment_results"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return (
+            f"Video assessment {self.id} - "
+            f"{self.predicted_class} - {self.user.username}"
+        )
